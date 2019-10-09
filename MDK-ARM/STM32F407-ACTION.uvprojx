@@ -432,6 +432,11 @@
               <FileType>1</FileType>
               <FilePath>..\Action_User\moveBase.c</FilePath>
             </File>
+            <File>
+              <FileName>moveBase2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Action_User\moveBase2.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -618,9 +623,9 @@
           <GroupName>Doc</GroupName>
           <Files>
             <File>
-              <FileName>Readme.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Readme.txt</FilePath>
+              <FileName>README.md</FileName>
+              <FileType>9</FileType>
+              <FilePath>..\README.md</FilePath>
             </File>
           </Files>
         </Group>

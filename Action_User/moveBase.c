@@ -35,16 +35,15 @@
 /*****************定义的一些全局变量用于串口返回值****************************/
 debug_t debug;
 wheelSpeed_t wheelSpeed = {0.0f,0.0f,0.0f};
-extern CameraInfo cameraInfo;
+//extern CameraInfo cameraInfo;
 float paramA=0;
 float paramB=0;
 
 
-void CameraAction(float yaw, float pitch,float speed)
-{
-    ReadActualPos(CAN2,1);
-    
-}
+//void CameraAction(float yaw, float pitch,float speed)
+//{
+//    ReadActualPos(CAN2,1);
+//}
 
 
 
@@ -75,7 +74,7 @@ void OpenLoopLine(float vel, float direction)
 
 	VelCrl(CAN1,WHEEL_ONE_ID,VEL_SIGNED*VEL2PULSE(wheelSpeed.v1));        
 	VelCrl(CAN1,WHEEL_TWO_ID,VEL_SIGNED*VEL2PULSE(wheelSpeed.v2));       
-	VelCrl(CAN1,WHEEL_TWO_ID,VEL_SIGNED*VEL2PULSE(wheelSpeed.v3)); 
+	VelCrl(CAN1,WHEEL_THREE_ID,VEL_SIGNED*VEL2PULSE(wheelSpeed.v3)); 
 
 	#define send1 0
 	if(send1)
@@ -105,7 +104,7 @@ void OpenLoopLine(float vel, float direction)
 */
 //开环变姿态圆
 void OpenLoopCircle(float vel,float cenX,float cenY)
-{    
+{
 	float w = 0.0f, radius = 0.0f;  
 	float d1 = 0.0f,d2 = 0.0f,d3 = 0.0f;
 	wheelSpeed_t wheelSpeed = {0.0f,0.0f,0.0f};
@@ -181,8 +180,8 @@ void OpenRound(float vel, float radius)
 //输入参数B>0	B=0时A>0
 
 	double outputA=0;
-    double outputB=0;
-    double outputC=0;
+  double outputB=0;
+  double outputC=0;
 void CloseLoopLine(float paraA,float paraB,float paraC, float dir, float vel, float exPos)
 {
     extern uint8_t stop_flag;
@@ -367,9 +366,7 @@ float AnglePID(float angleTarget, float anglePresent)
 */
 //dir0逆时针 dir1顺时针
 void CloseLoopCircle(float vel, float cenX, float cenY,
-								float radius, float dir, float exPos
-//									,
-									)
+								float radius, float dir, float exPos)
 //								float beginWard, float endWard)
 {
 	float award = 0.0f;
@@ -445,11 +442,12 @@ wheelSpeed_t CalcWheelspeed(float vel, float direction, float omega, float actPo
 	outSpeed.v2 = vel * cosf(ANG2RAD(120.0f + (direction-actPos))) - velRotate;
 	outSpeed.v3 = vel * cosf(ANG2RAD(120.0f - (direction-actPos))) - velRotate; 
 
-	#define send0 1
-	if(send0)
-	{
-		
-	}
+//	#define send0 1
+//	if(send0)
+//	{
+//		
+//	}
+	
     if(outSpeed.v1<4096&&outSpeed.v1>0)
         outSpeed.v1=4096;
     if(outSpeed.v2<4096&&outSpeed.v2>0)
@@ -471,28 +469,30 @@ wheelSpeed_t CalcWheelspeed(float vel, float direction, float omega, float actPo
         VelCrl(CAN2,2,outSpeed.v1);
         VelCrl(CAN2,3,outSpeed.v2);
         VelCrl(CAN2,1,outSpeed.v3);
-    }else {
-            VelCrl(CAN2,2,0);
-            VelCrl(CAN2,3,0);
-            VelCrl(CAN2,1,0);
+    }
+		else 
+		{
+				VelCrl(CAN2,2,0);
+				VelCrl(CAN2,3,0);
+				VelCrl(CAN2,1,0);
     }
     
     
     USART_OUT(UART4,(uint8_t*)" O %d %d %d ",(int)outSpeed.v3,(int)outSpeed.v1,(int)outSpeed.v2);
-	return outSpeed;
+		return outSpeed;
 }
 
 
 
 
-float cameraPoseTran_X()
-{
-    return cameraInfo.posx;
-}
-float cameraPoseTran_Y()
-{
-    return cameraInfo.posy;
-}
+//float cameraPoseTran_X()
+//{
+//    return cameraInfo.posx;
+//}
+//float cameraPoseTran_Y()
+//{
+//    return cameraInfo.posy;
+//}
 
 
 
@@ -505,105 +505,105 @@ void pose_angle_closeLoop(float dirAngle ,float poseAngle,float vel)
     CalcWheelspeed(vel, dirAngle,omega, GetAngle());
 }
 
-void pointControl(float x,float y,float poseAngle)
-{
-    float distanceLimit=200;
-    float dirAngle=atan2((y-GetY()),(x-GetX()))/3.14*180;
-    float Kp=12;
-    float distance=sqrt((y-GetY())*(y-GetY())+(x-GetX())*(x-GetX()));
-    float vel=Kp*(distance);
-    static uint8_t status=5;
-    static uint8_t timecnt=0;
-    if(vel>=15000)
-        vel=15000;
-    
-    switch (status)
-    {
-        case 5:
-            if(cameraInfo.status!=2)
-                status=0;
-            break;
-        case 0:
-            if(distance<distanceLimit)
-                status=1;
-            else
-            {
-                if(cameraInfo.status==0)
-                {
-                    if(timecnt<200)
-                    {
-                        timecnt++;
-                        VelCrl(CAN2,1,0);
-                        VelCrl(CAN2,2,0);
-                        VelCrl(CAN2,3,0); 
-                    }
-                    else {
-                            status=3;
-                            timecnt=0;
-                    }
-                }
-                else  pose_angle_closeLoop(dirAngle ,poseAngle,vel);
-            }
-            
-            break;
-        case 1:
-            if(distance>distanceLimit)
-                status=0;
-            if(cameraInfo.yawl<0)
-            {
-                VelCrl(CAN2,1,-1000);
-                VelCrl(CAN2,2,-1000);
-                VelCrl(CAN2,3,-1000);
-            }
-            else if(cameraInfo.yawl>0)
-            {
-                VelCrl(CAN2,1,1000);
-                VelCrl(CAN2,2,1000);
-                VelCrl(CAN2,3,1000);
-            }
-            if(cameraInfo.status==1)
-                status=2;
-            break;
-        case 2:
-                    VelCrl(CAN2,1,0);
-                    VelCrl(CAN2,2,0);
-                    VelCrl(CAN2,3,0);  
-            if(distance>distanceLimit&&cameraInfo.status==1)
-                status=0;        
-            break;
-        case 3: 
-            if(cameraInfo.yawl<0)
-            {
-                VelCrl(CAN2,1,-1000);
-                VelCrl(CAN2,2,-1000);
-                VelCrl(CAN2,3,-1000);
-            }
-            else if(cameraInfo.yawl>0)
-            {
-                VelCrl(CAN2,1,1000);
-                VelCrl(CAN2,2,1000);
-                VelCrl(CAN2,3,1000);
-            }
-            if(cameraInfo.status==1)
-                status=0;
-        
-        
-    }
+//void pointControl(float x,float y,float poseAngle)
+//{
+//    float distanceLimit=200;
+//    float dirAngle=atan2((y-GetY()),(x-GetX()))/3.14*180;
+//    float Kp=12;
+//    float distance=sqrt((y-GetY())*(y-GetY())+(x-GetX())*(x-GetX()));
+//    float vel=Kp*(distance);
+//    static uint8_t status=5;
+//    static uint8_t timecnt=0;
+//    if(vel>=15000)
+//        vel=15000;
+//    
+//    switch (status)
+//    {
+//        case 5:
+//            if(cameraInfo.status!=2)
+//                status=0;
+//            break;
+//        case 0:
+//            if(distance<distanceLimit)
+//                status=1;
+//            else
+//            {
+//                if(cameraInfo.status==0)
+//                {
+//                    if(timecnt<200)
+//                    {
+//                        timecnt++;
+//                        VelCrl(CAN2,1,0);
+//                        VelCrl(CAN2,2,0);
+//                        VelCrl(CAN2,3,0); 
+//                    }
+//                    else {
+//                            status=3;
+//                            timecnt=0;
+//                    }
+//                }
+//                else  pose_angle_closeLoop(dirAngle ,poseAngle,vel);
+//            }
+//            
+//            break;
+//        case 1:
+//            if(distance>distanceLimit)
+//                status=0;
+//            if(cameraInfo.yawl<0)
+//            {
+//                VelCrl(CAN2,1,-1000);
+//                VelCrl(CAN2,2,-1000);
+//                VelCrl(CAN2,3,-1000);
+//            }
+//            else if(cameraInfo.yawl>0)
+//            {
+//                VelCrl(CAN2,1,1000);
+//                VelCrl(CAN2,2,1000);
+//                VelCrl(CAN2,3,1000);
+//            }
+//            if(cameraInfo.status==1)
+//                status=2;
+//            break;
+//        case 2:
+//                    VelCrl(CAN2,1,0);
+//                    VelCrl(CAN2,2,0);
+//                    VelCrl(CAN2,3,0);  
+//            if(distance>distanceLimit&&cameraInfo.status==1)
+//                status=0;        
+//            break;
+//        case 3: 
+//            if(cameraInfo.yawl<0)
+//            {
+//                VelCrl(CAN2,1,-1000);
+//                VelCrl(CAN2,2,-1000);
+//                VelCrl(CAN2,3,-1000);
+//            }
+//            else if(cameraInfo.yawl>0)
+//            {
+//                VelCrl(CAN2,1,1000);
+//                VelCrl(CAN2,2,1000);
+//                VelCrl(CAN2,3,1000);
+//            }
+//            if(cameraInfo.status==1)
+//                status=0;
+//        
+//        
+//    }
 
-    USART_OUT(UART4,(uint8_t*)"E: %d %d %d %d",(int)dirAngle,(int)vel,(int)distance,(int)status);
-}
+//    USART_OUT(UART4,(uint8_t*)"E: %d %d %d %d",(int)dirAngle,(int)vel,(int)distance,(int)status);
+//}
 
-float length_buff_x(void)
-{
-    float angle=GetAngle()+90.0f;
-    float buff=PPS_CAMERA_LENGTH*cos(angle/180.0f*3.14f);
-    return buff;
-}
-float length_buff_y(void)
-{
-    float angle=GetAngle()+90.0f;
-    float buff=PPS_CAMERA_LENGTH*sin(angle/180.0f*3.14f);
-    return buff;
-}
+//float length_buff_x(void)
+//{
+//    float angle=GetAngle()+90.0f;
+//    float buff=PPS_CAMERA_LENGTH*cos(angle/180.0f*3.14f);
+//    return buff;
+//}
+//float length_buff_y(void)
+//{
+//    float angle=GetAngle()+90.0f;
+//    float buff=PPS_CAMERA_LENGTH*sin(angle/180.0f*3.14f);
+//    return buff;
+//}
 
  

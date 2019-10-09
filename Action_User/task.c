@@ -65,7 +65,7 @@ void ConfigTask(void)
 extern debug_t debug;
 uint8_t status = 0;
 int cnt = 0;
-extern CameraInfo cameraInfo;
+//extern CameraInfo cameraInfo;
 
 void WalkTask(void)
 {
@@ -75,7 +75,7 @@ void WalkTask(void)
 	OSSemSet(PeriodSem, 0, &os_err);
 
     extern GetData getdata;
-    cameraInfo.status=2;
+//    cameraInfo.status=2;
 	while (1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
@@ -85,11 +85,12 @@ void WalkTask(void)
             //手动模式
 			case 0:
 			{
-                pointControl(cameraInfo.posx+GetX()-length_buff_x(),cameraInfo.posz+GetY()-length_buff_y(),cameraInfo.yawl);
-                USART_OUT(UART4,(uint8_t*)" P %d %d %d C %d %d %d %d %d \r\n",(int)GetX(),(int)GetY(),(int)GetAngle(),
-                    (int)cameraInfo.posx,(int)cameraInfo.posy,(int)cameraInfo.posz,
-                    (int)cameraInfo.yawl,   
-                    (int)cameraInfo.status);
+//                pointControl(cameraInfo.posx+GetX()-length_buff_x(),cameraInfo.posz+GetY()-length_buff_y(),cameraInfo.yawl);
+//                USART_OUT(UART4,(uint8_t*)" P %d %d %d C %d %d %d %d %d \r\n",(int)GetX(),(int)GetY(),(int)GetAngle(),
+//                    (int)cameraInfo.posx,(int)cameraInfo.posy,(int)cameraInfo.posz,
+//                    (int)cameraInfo.yawl,   
+//                    (int)cameraInfo.status);
+								USART_OUT(UART4,(uint8_t*)" P %d %d %d\r\n",(int)GetX(),(int)GetY(),(int)GetAngle());
             break;
 			}
 			case 1:

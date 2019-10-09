@@ -249,27 +249,27 @@ char cameraData_buff[5] = {0};
 char pose_buff=0;
 char speed_buff[3]= {0};
 
-void char_to_int(uint8_t mode)
-{
-    
-    switch (mode)
-    {
-        case LEFT_ROCKER_ORDER_DEAL:
-            getdata.carDirection=(direction_buff[0] - 48 ) * 100 + (direction_buff[1] - 48 ) * 10+(direction_buff[2] - 48 );
-            getdata.speed=(direction_buff[3] - 48 ) * 10+(direction_buff[4] - 48 );
-            break;
-        case RIGHT_ROCKER_ORDER_DEAL:
-            getdata.cameraYaw=(cameraData_buff[0] - 48 ) * 100 + (cameraData_buff[1] - 48 ) * 10+(cameraData_buff[2] - 48 );
-            getdata.cameraPitch=(cameraData_buff[3] - 48 ) * 10+(cameraData_buff[4] - 48 );//(10~70)
-            break;
-        case POSE_ORDER_DEAL:
-            getdata.carOrentation=pose_buff;
-            break;
-        case  VELOCITY_ORDER_DEAL:
-            getdata.maxVelocity=(speed_buff[0] - 48 ) * 100 + (speed_buff[1] - 48 ) * 10+(speed_buff[2] - 48 );
-            break;
-    }
-}
+//void char_to_int(uint8_t mode)
+//{
+//    
+//    switch (mode)
+//    {
+//        case LEFT_ROCKER_ORDER_DEAL:
+//            getdata.carDirection=(direction_buff[0] - 48 ) * 100 + (direction_buff[1] - 48 ) * 10+(direction_buff[2] - 48 );
+//            getdata.speed=(direction_buff[3] - 48 ) * 10+(direction_buff[4] - 48 );
+//            break;
+//        case RIGHT_ROCKER_ORDER_DEAL:
+//            getdata.cameraYaw=(cameraData_buff[0] - 48 ) * 100 + (cameraData_buff[1] - 48 ) * 10+(cameraData_buff[2] - 48 );
+//            getdata.cameraPitch=(cameraData_buff[3] - 48 ) * 10+(cameraData_buff[4] - 48 );//(10~70)
+//            break;
+//        case POSE_ORDER_DEAL:
+//            getdata.carOrentation=pose_buff;
+//            break;
+//        case  VELOCITY_ORDER_DEAL:
+//            getdata.maxVelocity=(speed_buff[0] - 48 ) * 100 + (speed_buff[1] - 48 ) * 10+(speed_buff[2] - 48 );
+//            break;
+//    }
+//}
 uint8_t stop_flag=0;
 void UART4_IRQHandler(void)
 {
@@ -282,86 +282,86 @@ void UART4_IRQHandler(void)
 	if (USART_GetITStatus(UART4, USART_IT_RXNE) == SET)
 	{
         USART_ClearITPendingBit(UART4, USART_IT_RXNE);
-        static uint8_t order =BEGINE_RECEIVE;
-        static uint8_t right_rocker_cnt = 0;
-        static uint8_t left_rocker_cnt = 0;
-        static uint8_t pose_cnt= 0;
-        static uint8_t velocity_cnt = 0;
-        
-        static int num = 0;     
-        data=USART_ReceiveData(UART4);
-        if(data=='A')
-            stop_flag=1;
-        if(data=='T')
-            stop_flag=0;
-        switch (order)
-        {
-            
-            case BEGINE_RECEIVE:
-            if(data=='A')
-                order=ORDER_SELCT;
-            break;
-            case ORDER_SELCT:
-                if(data>='A'&&data<='Z')
-                {
-                    getdata.orderType=data;
-                    switch(getdata.orderType)
-                    {
-                        case LEFT_ROCKER_ORDER:     order=LEFT_ROCKER_ORDER_DEAL;       break;
-                        case RIGHT_ROCKER_ORDER:    order=RIGHT_ROCKER_ORDER_DEAL;           break;  
-                        case POSE_ORDER :           order=POSE_ORDER_DEAL;              break;
-                        case VELOCITY_ORDER :       order=VELOCITY_ORDER_DEAL;          break;
-                        case AUTO_MODE_ORDER:             order=AUTO_MODE_DEAL;               break;
-                        default: break;
-                    }
-                }else order=BEGINE_RECEIVE;
-            break;
-                
-            
-            case LEFT_ROCKER_ORDER_DEAL:
-                direction_buff[left_rocker_cnt]=data;
-                left_rocker_cnt++;
-                if(left_rocker_cnt>=5)
-                {
-                    char_to_int(LEFT_ROCKER_ORDER_DEAL);
-                    left_rocker_cnt=0;
-                    order=END_RECEIVE;
-                }
-            break;
-                
-            case RIGHT_ROCKER_ORDER_DEAL:
-                cameraData_buff[right_rocker_cnt]=data;
-                right_rocker_cnt++;
-                if(right_rocker_cnt>=5)
-                {
-                    char_to_int(RIGHT_ROCKER_ORDER_DEAL);
-                    right_rocker_cnt=0;
-                    order=END_RECEIVE;
-                }
-            break;
-            
-            case POSE_ORDER_DEAL:
-                pose_buff=data;
-                char_to_int(POSE_ORDER_DEAL);
-            break;
-            
-            case VELOCITY_ORDER_DEAL:
-                speed_buff[velocity_cnt]=data;
-                velocity_cnt++;
-                if(velocity_cnt>=3)
-                {
-                    char_to_int(VELOCITY_ORDER_DEAL);
-                    velocity_cnt=0;
-                    order=END_RECEIVE;
-                }
-                break;
-                
-            case END_RECEIVE:
-                order=BEGINE_RECEIVE;
-            break;
-            
-            default: break;
-        }
+//        static uint8_t order =BEGINE_RECEIVE;
+//        static uint8_t right_rocker_cnt = 0;
+//        static uint8_t left_rocker_cnt = 0;
+//        static uint8_t pose_cnt= 0;
+//        static uint8_t velocity_cnt = 0;
+//        
+//        static int num = 0;     
+//        data=USART_ReceiveData(UART4);
+//        if(data=='A')
+//            stop_flag=1;
+//        if(data=='T')
+//            stop_flag=0;
+//        switch (order)
+//        {
+//            
+//            case BEGINE_RECEIVE:
+//            if(data=='A')
+//                order=ORDER_SELCT;
+//            break;
+//            case ORDER_SELCT:
+//                if(data>='A'&&data<='Z')
+//                {
+//                    getdata.orderType=data;
+//                    switch(getdata.orderType)
+//                    {
+//                        case LEFT_ROCKER_ORDER:     order=LEFT_ROCKER_ORDER_DEAL;       break;
+//                        case RIGHT_ROCKER_ORDER:    order=RIGHT_ROCKER_ORDER_DEAL;           break;  
+//                        case POSE_ORDER :           order=POSE_ORDER_DEAL;              break;
+//                        case VELOCITY_ORDER :       order=VELOCITY_ORDER_DEAL;          break;
+//                        case AUTO_MODE_ORDER:             order=AUTO_MODE_DEAL;               break;
+//                        default: break;
+//                    }
+//                }else order=BEGINE_RECEIVE;
+//            break;
+//                
+//            
+//            case LEFT_ROCKER_ORDER_DEAL:
+//                direction_buff[left_rocker_cnt]=data;
+//                left_rocker_cnt++;
+//                if(left_rocker_cnt>=5)
+//                {
+//                    char_to_int(LEFT_ROCKER_ORDER_DEAL);
+//                    left_rocker_cnt=0;
+//                    order=END_RECEIVE;
+//                }
+//            break;
+//                
+//            case RIGHT_ROCKER_ORDER_DEAL:
+//                cameraData_buff[right_rocker_cnt]=data;
+//                right_rocker_cnt++;
+//                if(right_rocker_cnt>=5)
+//                {
+//                    char_to_int(RIGHT_ROCKER_ORDER_DEAL);
+//                    right_rocker_cnt=0;
+//                    order=END_RECEIVE;
+//                }
+//            break;
+//            
+//            case POSE_ORDER_DEAL:
+//                pose_buff=data;
+//                char_to_int(POSE_ORDER_DEAL);
+//            break;
+//            
+//            case VELOCITY_ORDER_DEAL:
+//                speed_buff[velocity_cnt]=data;
+//                velocity_cnt++;
+//                if(velocity_cnt>=3)
+//                {
+//                    char_to_int(VELOCITY_ORDER_DEAL);
+//                    velocity_cnt=0;
+//                    order=END_RECEIVE;
+//                }
+//                break;
+//                
+//            case END_RECEIVE:
+//                order=BEGINE_RECEIVE;
+//            break;
+//            
+//            default: break;
+//        }
 	}
 	OSIntExit();
 }
@@ -424,7 +424,8 @@ void USART1_IRQHandler(void)
 camera_DATA camera_posx;
 camera_DATA camera_posy;
 camera_DATA camera_posz;
-CameraInfo cameraInfo;
+
+//CameraInfo cameraInfo;
 void USART2_IRQHandler(void)
 {
 	OS_CPU_SR cpu_sr;
@@ -441,75 +442,74 @@ void USART2_IRQHandler(void)
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
 		ch = USART_ReceiveData(USART2); 
 		
-		switch(count)
-		{
-			case 0:
-			{
-				if(ch == 'A')
-					count++;				
-				else
-					count = 0;
-				break;	
-			}
-			case 1:
-			{
-				if(ch == 'T')
-					count++;
-                else    
-                    count = 0;
-				break;	
-			}
-            case 2:
-            {
-                cameraInfo.status=ch;
-                count++;
-                i=0;
-                break;
-            }
-            case 3:
-            {
-                data_buff[i]=ch;
-                i++;
-                if(i>=12)
-                {
-                    count++;
-                    i=0;
-                    break;
-                }
-                 break;
-            }
-            case 4:
-            {
-                camera_posx.data8[0]=data_buff[0];
-                camera_posx.data8[1]=data_buff[1];
-                camera_posx.data8[2]=data_buff[2];
-                camera_posx.data8[3]=data_buff[3];
-                
-                camera_posy.data8[0]=data_buff[4];
-                camera_posy.data8[1]=data_buff[5];
-                camera_posy.data8[2]=data_buff[6];
-                camera_posy.data8[3]=data_buff[7];
-                
-                camera_posz.data8[0]=data_buff[8];
-                camera_posz.data8[1]=data_buff[9];
-                camera_posz.data8[2]=data_buff[10];
-                camera_posz.data8[3]=data_buff[11];                
-                for(int j=0; j<12;j++)
-                    data_buff[j]=0;
-                
-                cameraInfo.posx=camera_posx.dataf;
-                cameraInfo.posy=camera_posy.dataf;
-                cameraInfo.posz=camera_posz.dataf;
-                cameraInfo.yawl=atan2(cameraInfo.posz,cameraInfo.posx)/3.14f*180.0f-90.0f+GetAngle() ;
-                count=0;
-            }
+//		switch(count)
+//		{
+//			case 0:
+//			{
+//				if(ch == 'A')
+//					count++;				
+//				else
+//					count = 0;
+//				break;	
+//			}
+//			case 1:
+//			{
+//				if(ch == 'T')
+//					count++;
+//                else    
+//                    count = 0;
+//				break;	
+//			}
+//            case 2:
+//            {
+//                cameraInfo.status=ch;
+//                count++;
+//                i=0;
+//                break;
+//            }
+//            case 3:
+//            {
+//                data_buff[i]=ch;
+//                i++;
+//                if(i>=12)
+//                {
+//                    count++;
+//                    i=0;
+//                    break;
+//                }
+//                 break;
+//            }
+//            case 4:
+//            {
+//                camera_posx.data8[0]=data_buff[0];
+//                camera_posx.data8[1]=data_buff[1];
+//                camera_posx.data8[2]=data_buff[2];
+//                camera_posx.data8[3]=data_buff[3];
+//                
+//                camera_posy.data8[0]=data_buff[4];
+//                camera_posy.data8[1]=data_buff[5];
+//                camera_posy.data8[2]=data_buff[6];
+//                camera_posy.data8[3]=data_buff[7];
+//                
+//                camera_posz.data8[0]=data_buff[8];
+//                camera_posz.data8[1]=data_buff[9];
+//                camera_posz.data8[2]=data_buff[10];
+//                camera_posz.data8[3]=data_buff[11];                
+//                for(int j=0; j<12;j++)
+//                    data_buff[j]=0;
+//                
+//                cameraInfo.posx=camera_posx.dataf;
+//                cameraInfo.posy=camera_posy.dataf;
+//                cameraInfo.posz=camera_posz.dataf;
+//                cameraInfo.yawl=atan2(cameraInfo.posz,cameraInfo.posx)/3.14f*180.0f-90.0f+GetAngle() ;
+//                count=0;
+//            }
             
-		}
+//		}
 	}
 	OSIntExit();
 }
 
-/*定位系统数据接收串口*/
 void USART3_IRQHandler(void)
 {
 
@@ -543,6 +543,7 @@ void USART3_IRQHandler(void)
 	OSIntExit();
 }
 
+/*定位系统数据接收串口*/
 void USART6_IRQHandler(void) //更新频率200Hz
 {
 	static uint8_t ch;

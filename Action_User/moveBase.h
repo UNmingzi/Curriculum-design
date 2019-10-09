@@ -49,18 +49,18 @@ typedef struct
 	uint32_t cnt;//用于检测是否数据丢失
 }debug_t;
 
-typedef struct {
-    int8_t status;
-    float posx;
-    float posy;
-    float posz;
-    float yawl;
-    float last_yawl;
-    float lastx;
-    float lasty;
-    float lastz;
-    
-}CameraInfo;
+//typedef struct {
+//    int8_t status;
+//    float posx;
+//    float posy;
+//    float posz;
+//    float yawl;
+//    float last_yawl;
+//    float lastx;
+//    float lasty;
+//    float lastz;
+//    
+//}CameraInfo;
 
 typedef union {
     char data8[4];
@@ -87,26 +87,26 @@ typedef struct{
 #define MANUAL_MODE
 
 
-#define LEFT_ROCKER_ORDER       'D'
-#define RIGHT_ROCKER_ORDER      'C'
-#define POSE_ORDER              'T'
-#define VELOCITY_ORDER          'V'
-#define AUTO_MODE_ORDER               'B'
+//#define LEFT_ROCKER_ORDER       'D'
+//#define RIGHT_ROCKER_ORDER      'C'
+//#define POSE_ORDER              'T'
+//#define VELOCITY_ORDER          'V'
+//#define AUTO_MODE_ORDER               'B'
 
-#define BEGINE_RECEIVE     1
-#define ORDER_SELCT        2
-#define END_RECEIVE        3
-#define AUTO_MODE_DEAL     0
-
-
-#define LEFT_ROCKER_ORDER_DEAL      11
-#define RIGHT_ROCKER_ORDER_DEAL     12
-#define POSE_ORDER_DEAL             13
-#define VELOCITY_ORDER_DEAL         14
+//#define BEGINE_RECEIVE     1
+//#define ORDER_SELCT        2
+//#define END_RECEIVE        3
+//#define AUTO_MODE_DEAL     0
 
 
-#define LENGTH_MAX  6000
-#define CATCH_SCAN  500
+//#define LEFT_ROCKER_ORDER_DEAL      11
+//#define RIGHT_ROCKER_ORDER_DEAL     12
+//#define POSE_ORDER_DEAL             13
+//#define VELOCITY_ORDER_DEAL         14
+
+
+//#define LENGTH_MAX  6000
+//#define CATCH_SCAN  500
 
 
 /*三轮底盘信息*/
@@ -164,7 +164,7 @@ void CloseLoopLine(float paraA,float paraB,float paraC, float dir, float vel, fl
 void CloseLoopCircle(float vel, float cenX, float cenY,float radius,float dir,float exPos);
 void autoControl();
 void pose_angle_closeLoop(float dirAngle ,float poseAngle,float vel);	
-void pointControl(float x,float y,float poseAngle);
+//void pointControl(float x,float y,float poseAngle);
 float length_buff_x(void);
 float length_buff_y(void);
 //								float beginWard, float endWard);
