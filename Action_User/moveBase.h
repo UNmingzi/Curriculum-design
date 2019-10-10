@@ -44,10 +44,10 @@ typedef struct
 	float v3;
 }wheelSpeed_t;
 
-typedef struct
-{
-	uint32_t cnt;//用于检测是否数据丢失
-}debug_t;
+//typedef struct
+//{
+//	uint32_t cnt;//用于检测是否数据丢失
+//}debug_t;
 
 //typedef struct {
 //    int8_t status;
@@ -62,29 +62,29 @@ typedef struct
 //    
 //}CameraInfo;
 
-typedef union {
-    char data8[4];
-    float dataf;
-}camera_DATA;
+//typedef union {
+//    char data8[4];
+//    float dataf;
+//}camera_DATA;
 
 
 
-typedef struct{
+//typedef struct{
 
-    unsigned char orderType;
-    unsigned char data_char[3];
-    int data;
-    int carDirection;
-    int carOrentation;
-    uint8_t speed;
-    int cameraPitch;
-    int cameraYaw;
-    int maxVelocity;
-    
-}GetData;
+//    unsigned char orderType;
+//    unsigned char data_char[3];
+//    int data;
+//    int carDirection;
+//    int carOrentation;
+//    uint8_t speed;
+//    int cameraPitch;
+//    int cameraYaw;
+//    int maxVelocity;
+//    
+//}GetData;
 
 
-#define MANUAL_MODE
+//#define MANUAL_MODE
 
 
 //#define LEFT_ROCKER_ORDER       'D'
@@ -138,19 +138,19 @@ typedef struct{
 #define PULSE_PER_ROUND		(8192)
 #endif
 
-//#define SMALL_CAR
-#ifdef SMALL_CAR
-#define DEBUG_USART UART4
-#define VEL_SIGNED 	(-1)
-//轮子直径
-#define WHEEL_DIAMETER		(50.0f)
-//底盘旋转半径
-#define MOVEBASE_RADIUS		(88.6f)
-//减速比
-#define REDUCTION_RATIO		(1.0f)
-//电机旋转一周的脉冲数
-#define PULSE_PER_ROUND		(32768)
-#endif
+////#define SMALL_CAR
+//#ifdef SMALL_CAR
+//#define DEBUG_USART UART4
+//#define VEL_SIGNED 	(-1)
+////轮子直径
+//#define WHEEL_DIAMETER		(50.0f)
+////底盘旋转半径
+//#define MOVEBASE_RADIUS		(88.6f)
+////减速比
+//#define REDUCTION_RATIO		(1.0f)
+////电机旋转一周的脉冲数
+//#define PULSE_PER_ROUND		(32768)
+//#endif
 
 #endif
 

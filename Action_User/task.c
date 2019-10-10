@@ -56,14 +56,18 @@ void ConfigTask(void)
 {
 	CPU_INT08U os_err;
 	os_err = os_err;
+	
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+	
+	//初始化所需外设以及定位系统
 	Init();
+	
 	OSTaskSuspend(OS_PRIO_SELF);
 
 }
 
-extern debug_t debug;
-uint8_t status = 0;
+//extern debug_t debug;
+//uint8_t status = 0;
 int cnt = 0;
 //extern CameraInfo cameraInfo;
 
@@ -74,30 +78,35 @@ void WalkTask(void)
 	os_err = os_err;
 	OSSemSet(PeriodSem, 0, &os_err);
 
-    extern GetData getdata;
+//    extern GetData getdata;
 //    cameraInfo.status=2;
 	while (1)
 	{
 		OSSemPend(PeriodSem, 0, &os_err);
-        
-		switch(status)
-		{
-            //手动模式
-			case 0:
-			{
-//                pointControl(cameraInfo.posx+GetX()-length_buff_x(),cameraInfo.posz+GetY()-length_buff_y(),cameraInfo.yawl);
-//                USART_OUT(UART4,(uint8_t*)" P %d %d %d C %d %d %d %d %d \r\n",(int)GetX(),(int)GetY(),(int)GetAngle(),
-//                    (int)cameraInfo.posx,(int)cameraInfo.posy,(int)cameraInfo.posz,
-//                    (int)cameraInfo.yawl,   
-//                    (int)cameraInfo.status);
-								USART_OUT(UART4,(uint8_t*)" P %d %d %d\r\n",(int)GetX(),(int)GetY(),(int)GetAngle());
-            break;
-			}
-			case 1:
-			{
-               
-			}
-		}
+    
+		USART_OUT(USART2,(uint8_t*)" P %d %d %d\r\n",(int)GetX(),(int)GetY(),(int)GetAngle());
+		
+		VelCrl(CAN2,1,0);
+		VelCrl(CAN2,2,0);
+		VelCrl(CAN2,3,0);
+//		switch(status)
+//		{
+//            //手动模式
+//			case 0:
+//			{
+////                pointControl(cameraInfo.posx+GetX()-length_buff_x(),cameraInfo.posz+GetY()-length_buff_y(),cameraInfo.yawl);
+////                USART_OUT(UART4,(uint8_t*)" P %d %d %d C %d %d %d %d %d \r\n",(int)GetX(),(int)GetY(),(int)GetAngle(),
+////                    (int)cameraInfo.posx,(int)cameraInfo.posy,(int)cameraInfo.posz,
+////                    (int)cameraInfo.yawl,   
+////                    (int)cameraInfo.status);
+//								USART_OUT(UART4,(uint8_t*)" P %d %d %d\r\n",(int)GetX(),(int)GetY(),(int)GetAngle());
+//            break;
+//			}
+//			case 1:
+//			{
+//               
+//			}
+//		}
 //                    timecnt++;
 //                    if(timecnt>500)
 //                    {
@@ -121,18 +130,23 @@ void Init(void)
 {
 	//先给轮子上电 让它的程序运行起来  再运行主控程序
 	delay_s(2);
+	
+	//定时器TIM2,TIM3初始化
 	TIM_Init(TIM2, 999, 83, 0x01, 0x03);//1ms
-    
-    TIM_Init(TIM3, 999, 83, 0x01, 0x03);//
-    
+  TIM_Init(TIM3, 999, 83, 0x01, 0x03);//1ms
+  
+	//与定位系统通信 串口初始化
 	USART3_Init(115200);//
-	USART1_Init(921600);
+//	USART1_Init(921600);
+	//接收调试数据 串口初始化
 	USART2_Init(115200);//debug
-	UART4_Init(115200);//computer
+//	UART4_Init(115200);//computer'
+	
+	//CAN1 CAN2 初始化
 	CAN_Config(CAN1,500,GPIOB,GPIO_Pin_5,GPIO_Pin_6);
 	CAN_Config(CAN2,500,GPIOB,GPIO_Pin_8,GPIO_Pin_9);
      
-
+	//等待定位系统初始化完成
 	WaitOpsPrepare();
 
 }

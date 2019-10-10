@@ -33,7 +33,7 @@
 
 
 /*****************定义的一些全局变量用于串口返回值****************************/
-debug_t debug;
+//debug_t debug;
 wheelSpeed_t wheelSpeed = {0.0f,0.0f,0.0f};
 //extern CameraInfo cameraInfo;
 float paramA=0;

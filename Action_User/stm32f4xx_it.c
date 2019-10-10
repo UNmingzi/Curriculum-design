@@ -44,7 +44,7 @@
 /*            Cortex-M4 Processor Exceptions Handlers                         */
 /******************************************************************************/
 
-GetData getdata;
+//GetData getdata;
 void CAN1_RX0_IRQHandler(void)
 {
 	OS_CPU_SR cpu_sr;
@@ -421,9 +421,9 @@ void USART1_IRQHandler(void)
 
 
 
-camera_DATA camera_posx;
-camera_DATA camera_posy;
-camera_DATA camera_posz;
+//camera_DATA camera_posx;
+//camera_DATA camera_posy;
+//camera_DATA camera_posz;
 
 //CameraInfo cameraInfo;
 void USART2_IRQHandler(void)
@@ -510,9 +510,9 @@ void USART2_IRQHandler(void)
 	OSIntExit();
 }
 
+/*定位系统数据接收串口*/
 void USART3_IRQHandler(void)
 {
-
 	OS_CPU_SR cpu_sr;
 	OS_ENTER_CRITICAL(); /* Tell uC/OS-II that we are starting an ISR*/
 	OSIntNesting++;
@@ -543,7 +543,7 @@ void USART3_IRQHandler(void)
 	OSIntExit();
 }
 
-/*定位系统数据接收串口*/
+///*定位系统数据接收串口*/
 void USART6_IRQHandler(void) //更新频率200Hz
 {
 	static uint8_t ch;
@@ -562,62 +562,62 @@ void USART6_IRQHandler(void) //更新频率200Hz
 	{
 		USART_ClearITPendingBit(USART6, USART_IT_RXNE);
 		ch = USART_ReceiveData(USART6);
-		switch (count)
-		{
-		case 0:
-			if (ch == 0x0d)
-				count++;
-			else
-				count = 0;
-			break;
+//		switch (count)
+//		{
+//		case 0:
+//			if (ch == 0x0d)
+//				count++;
+//			else
+//				count = 0;
+//			break;
 
-		case 1:
-			if (ch == 0x0a)
-			{
-				i = 0;
-				count++;
-			}
-			else if (ch == 0x0d)
-				;
-			else
-				count = 0;
-			break;
+//		case 1:
+//			if (ch == 0x0a)
+//			{
+//				i = 0;
+//				count++;
+//			}
+//			else if (ch == 0x0d)
+//				;
+//			else
+//				count = 0;
+//			break;
 
-		case 2:
-			posture.data[i] = ch;
-			i++;
-			if (i >= 24)
-			{
-				i = 0;
-				count++;
-			}
-			break;
+//		case 2:
+//			posture.data[i] = ch;
+//			i++;
+//			if (i >= 24)
+//			{
+//				i = 0;
+//				count++;
+//			}
+//			break;
 
-		case 3:
-			if (ch == 0x0a)
-				count++;
-			else
-				count = 0;
-			break;
+//		case 3:
+//			if (ch == 0x0a)
+//				count++;
+//			else
+//				count = 0;
+//			break;
 
-		case 4:
-			if (ch == 0x0d)
-			{
+//		case 4:
+//			if (ch == 0x0d)
+//			{
 
-				posture.ActVal[0] = posture.ActVal[0];
-				posture.ActVal[1] = posture.ActVal[1];
-				posture.ActVal[2] = posture.ActVal[2];
-				posture.ActVal[3] = posture.ActVal[3];
-				posture.ActVal[4] = posture.ActVal[4];
-				posture.ActVal[5] = posture.ActVal[5];
-			}
-			count = 0;
-			break;
+//				posture.ActVal[0] = posture.ActVal[0];
+//				posture.ActVal[1] = posture.ActVal[1];
+//				posture.ActVal[2] = posture.ActVal[2];
+//				posture.ActVal[3] = posture.ActVal[3];
+//				posture.ActVal[4] = posture.ActVal[4];
+//				posture.ActVal[5] = posture.ActVal[5];
+//			}
+//			count = 0;
+//			break;
 
-		default:
-			count = 0;
-			break;
-		}
+//		default:
+//			count = 0;
+//			break;
+//		}
 	}
 	else
 	{
